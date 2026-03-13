@@ -99,28 +99,40 @@ Based on the analysis, several strategies are recommended:
 ```
 Employee-Attrition-Analysis
 │
-├── data
-│   ├── employee_attrition.sql
-│   └── employee_attrition.xlsx
-│
-├── notebooks
-│   └── attrition_analysis.ipynb
-│
-├── images
-│   └── charts and visualizations
+├─PROJECT - Employee_Attrition_Analysis
+|   ├── data
+│   |    ├── employee_attrition.sql
+│   |    └── employee_attrition.xlsx
+│   └── code analytics
+|        ├── .Rhistory
+|        ├── Emoyee_Attrition_Da.sql
+|        ├── Employee_Attriion_RAnalysis.nb.html
+|        ├── Employee_Attriion_RAnalysis.Rmd
+|        └── Employee_Attriion_RAnalysis.ipynb
 │
 └── README.md
 ```
 ## Tools & Technologies
 
-The project was developed using the following tools:
+**Programming Languages**
+- Python
+- R
+- SQL
 
-- **Python** – Data analysis and data manipulation  
-- **Pandas & NumPy** – Data cleaning and transformation  
-- **Matplotlib & Seaborn** – Data visualization  
-- **SQL** – Data querying and analysis  
-- **Spreadsheet Tools** – Supporting data exploration and validation  
+**Python Libraries**
+- Pandas
+- NumPy
+- Matplotlib
+- Seaborn
 
+**R Libraries**
+- tidyverse – Data manipulation and analysis
+- janitor – Data cleaning and column standardization
+- scales – Formatting and scaling data in visualizations
+- corrplot – Correlation matrix visualization
+
+**Other Tools**
+- Excel / Spreadsheet Tools
 ---
 
 ## Future Improvements

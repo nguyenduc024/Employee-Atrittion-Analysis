@@ -1,0 +1,139 @@
+---
+title: "Employee Attrition Analysis with R"
+output: html_notebook
+author: @nguyenduc024
+updated date: 03/12/2026
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code.
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*.
+
+`{rm(list = ls())}`
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+# Setup dataset
+
+## Install library
+
+```{r}
+install.packages(c("tidyverse", "janitor", "scales", "corrplot"))
+
+library(tidyverse)
+library(janitor)
+
+```
+
+```{r}
+# Read dataset
+df <- read.csv("C:/Users/kirat/Desktop/PROJECT - Employee_Attrition_Analysis/data/Employee Attrition.csv", sep = ";", check.names = FALSE) %>%
+```
+
+```{r}
+# Show top 6 rows
+glimpse(df)
+head(df)
+```
+
+# Exploratory Data Analysis
+
+## Chart 1: The "Burnout" Heatmap (Work Hours vs. Satisfaction)
+
+```{r}
+# Advanced Density Heatmap
+ggplot(df, aes(x = average_montly_hours, y = satisfaction_level)) +
+  geom_bin2d(bins = 30) +
+  scale_fill_viridis_c(option = "inferno") +
+  geom_vline(xintercept = 250, linetype = "dashed", color = "white") + # Highlight high hours
+  labs(title = "The Burnout Zone: Hours vs. Satisfaction",
+       subtitle = "Employees working > 250h/month show distinct clusters of low satisfaction",
+       x = "Average Monthly Hours", y = "Satisfaction Level") +
+  theme_minimal()
+```
+
+##Char 2: Average working hours by department
+
+```{r}
+library(tidyverse)
+
+# Function to fix the comma-to-dot decimal and convert to numeric
+fix_to_numeric <- function(x) {
+  as.numeric(str_replace(x, ",", "."))
+}
+
+df_clean %>%
+  group_by(dept) %>%
+  summarise(avg_hours = mean(average_montly_hours, na.rm = TRUE)) %>%
+  ggplot(aes(x = reorder(dept, avg_hours), y = avg_hours)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+
+  # expand_limits(y = ...) ensures there is empty space at the end of the bars
+  geom_text(aes(label = round(avg_hours, 1)), 
+            hjust = -0.5, 
+            size = 4.2) + 
+  expand_limits(y = max(df_clean$average_montly_hours, na.rm = TRUE) * 1) + 
+  labs(title = "Average Monthly Hours per Department",
+       x = "Department", y = "Average Hours") +
+  theme_minimal()
+```
+
+##Chart 3: Satisfaction Distribution (The "Morale Check")
+
+```{r}
+ggplot(df, aes(x = satisfaction_level)) +
+  geom_density(fill = "steelblue", alpha = 0.5) +
+  labs(title = "Employee Satisfaction Density",
+       x = "Satisfaction Level (0 - 1)", y = "Density") +
+  theme_minimal()
+```
+
+##Chart 4: Correlation Matrix Heatmap
+
+```{r}
+corrplot(cor_data, 
+         method = "color",     # This fills the entire cell with color
+         type = "full",        # Ensures the full square matrix
+         diag = TRUE,          # Includes the diagonal
+         tl.col = "black",     # Label text color
+         tl.srt = 45,          # Label rotation
+         addCoef.col = "black",# Text color for the correlation coefficients
+         number.cex = 0.7,     # Size of the text
+         col = colorRampPalette(c("#E74C3C", "white", "#3498DB"))(200))
+```
+
+##Chart 5: Employee Tenue by Department
+
+```{r}
+# Visualizing count of employees by tenure and department
+df_clean %>%
+  ggplot(aes(x = as.factor(time_spend_company), fill = dept)) +
+  geom_bar(position = "stack") + 
+  scale_fill_brewer(palette = "Set3") + # Professional color palette
+  labs(title = "Employee Tenure Distribution by Department",
+       subtitle = "Total headcount per year of service, broken down by department",
+       x = "Years at Company", 
+       y = "Number of Employees",
+       fill = "Department") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+# Key Insights
+
+-   Employees working more than 250 hours per month tend to show lower satisfaction levels.
+-   Moderate workloads are associated with higher employee satisfaction.
+-   Most employees leave the company after their third year.
+-   Technical, Sales and Product Manager departments consistently work longer hours than others.
+
+# Recommendations
+
+1.  Implement career development programs for Mid-Tenure employees
+2.  Introduce performance-Based incentives around the 3-Year milestone
+3.  Monitor Workload to prevent burnout
+4.  Conduct Periodic Employee Satisfaction Surveys

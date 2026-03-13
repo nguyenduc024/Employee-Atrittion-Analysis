@@ -19,7 +19,7 @@ retention strategies.
 - Provide data-driven insights to support HR decision-making
 - Recommend strategies to reduce employee attrition
 
-## 4. Dataset
+## Dataset
 
 The dataset contains employee-related information used to analyze factors
 associated with employee attrition. Each record represents an individual
